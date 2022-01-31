@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Card, CardActions, CardContent, Button,  TextField, CardHeader, Avatar, InputAdornment, Typography} from "@mui/material";
-import  {makeStyles  } from "@mui/styles";
-import { Link, useLocation } from "react-router-dom";
+import { Card, CardActions, CardContent, Button, TextField, CardHeader, Avatar, InputAdornment, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { useLocation } from "react-router-dom";
 import { Send, Mail, Lock } from "@mui/icons-material";
 import { loginUser } from "../../../services/auth-service";
 import { useAuth } from "../../../components/contexts/AuthContext";
@@ -26,7 +26,7 @@ const LoginScreen = ({ history }) => {
 	const classes = useStyles();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("password");
-	const { setAuth } = useAuth();
+	const { auth, setAuth } = useAuth();
 	const { pathname } = useLocation();
 
 	const handleValidation = () => {
@@ -64,11 +64,11 @@ const LoginScreen = ({ history }) => {
 						required
 						id="email"
 						label="Email"
-						helperText="example@example.com"
+						helperText={auth?.type === "EXTERNAL" ? "You don't have access" : "example@example.com"}
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 						onKeyDown={handleKeyPress}
-						error={validateEmail()}
+						error={auth?.type === "EXTERNAL" || validateEmail()}
 						margin="normal"
 						fullWidth
 						InputProps={{
@@ -100,9 +100,7 @@ const LoginScreen = ({ history }) => {
 					/>
 				</CardContent>
 				<CardActions className={classes.action}>
-					<Typography className={classes.link}>
-						Don't have an account yet? <Link to="/signup">SignUp</Link>
-					</Typography>
+					<Typography className={classes.link}></Typography>
 					<Button
 						id="btn_login"
 						onClick={(e) => handleClick()}
